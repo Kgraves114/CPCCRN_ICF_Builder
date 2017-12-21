@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Consent Builder- {{ study.studyname }}{% endblock %}
+{% block page_content %}
+<link rel=stylesheet href="{{ url_for('static', filename='pdfstyle.css') }}" />
+<div>
+  <img align="left" class="img-rounded profile-thumbnail" src="{{ study.gravatar(size=64) }}">
+  <h3 align="center">{{ study.studyname }}</h3>
+  <h5 align="center">{{ study.investigator }}</h5>
+  <h5 align="center">{{ study.location }}</h5>
+  <br>
+  <b>Background</b>
+  <p>{% filter markdown %}{{ study.background }}{% endfilter %}</p>
+  <br>
+  <b>Study Procedures</b>
+  <p>{% filter markdown %}{{ study.study_procedure }}{% endfilter %}</p>
+  <br>
+  <b> Risks and Benefits </b>
+  <p>{% filter markdown %}{{ study.risksbenefits }}{% endfilter %}</p>
+  <br>
+  <b>AUTHORIZATION FOR USE OF YOUR PROTECTED HEALTH INFORMATION </b>
+  <p>{% filter markdown %}{{ study.PHI }}{% endfilter %}</p>
+  <br>
+<b>CONSENT:</b>
+<p>
+I confirm that I have read this consent and authorization document and
+have had the opportunity to ask questions.<br>
+I will be given a signed copy of the consent and authorization form to keep.
+I agree to participate in this research study and authorize you to use and
+disclose health information about me for this study, as you have explained
+in this document.
+</p><br>
+<br>
+<br>
+________________________<br>
+Participant’s Name<br>
+<br>
+<br>
+________________________		&nbsp;&nbsp;&nbsp;	____________<br>
+Participant’s Signature		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      Date<br>
+<br>
+<br>
+__________________________________<br>
+Name of Person Obtaining Authorization and Consent<br>
+<br>
+<br>
+__________________________________	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ____________<br>
+Signature of Person Obtaining Authorization and Consent		&nbsp;&nbsp;&nbsp;
+&nbsp;Date<br>
+
+<br>
+<br>
+<br>
+
+<h6>{{ study.studyname }}</h6>
+</div>
+<div>
+<p>
+  <nav align="center"><a class="btn btn-default" href="{{ url_for('main.study_pdf', studyname=current_user.studyname) }}"target="_blank">Get PDF</a></nav>
+</p>
+
+<p align="center">
+    {% if study == current_user %}
+    <a class="btn btn-default" href="{{ url_for('.edit_consent') }}">Edit Consent</a>
+    {% endif %}
+</p>
+</div>
+{% endblock %}

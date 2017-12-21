@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Form Builder - Edit Consent{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Edit Your Consent</h1>
+    <h5>Format your content using Markdown</h5>
+</div>
+
+<div class="col-md-6">
+    {{ wtf.quick_form(form) }}
+</div>
+<div>
+</div>
+{% endblock %}
