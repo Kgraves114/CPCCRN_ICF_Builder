@@ -1,14 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Consent Builder- {{ user.username }}{% endblock %}
+{% block title %}Consent Builder- {{ user.studyname }}{% endblock %}
 {% block page_content %}
-<link rel=stylesheet href="{{ url_for('static', filename='pdfstyle.css') }}" />
+<link rel=stylesheet href="{{ url_for('static', filename='CNMCstyle.css') }}" />
 <div>
-  <img align="left" class="img-rounded profile-thumbnail" src="{{ study.gravatar(size=64) }}">
-  <h3 align="center">{{ study.studyname }}</h3>
-  <h5 align="center">{{ study.investigator }}</h5>
-  <h5 align="center">{{ study.location }}</h5>
+  <h3 align="center"><b>Parental Permission and Authorization Document</b></h3>
+  <h6 align="center">Assent Document for Child Particpants (7-11 years old)</h6>
+  <h6 align="center">Consent Document (18 years old)</h6>
   <br>
-  <b>Background</b>
+  <h4 align="center"><b>Children's National Medical Center</b></h4>
+</div>
+<div>
+  <h4 align="left"><b>Study Title:       {{ study.studyname }}</b></h4>
+  <br>
+  <h4 align="left"><b>Principal Investigator:    Murray Pollack, MD</b></h4>
+  <br>
+  <h4 align="left"><b>Source of Support:  National Institute of Child Health and Human Development (NICHD)</b></h4>
+  <br>
+  <b>BACKGROUND</b>
   <p>{% filter markdown %}{{ study.background }}{% endfilter %}</p>
   <br>
   <b>Study Procedures</b>

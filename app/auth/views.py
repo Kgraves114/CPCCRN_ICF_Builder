@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, \
     current_user
 from . import auth
 from .. import db
-from ..models import Study
+from ..models import User
 from ..email import send_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
     PasswordResetRequestForm, PasswordResetForm
@@ -31,14 +31,14 @@ def unconfirmed():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        study = Study.query.filter_by(email=form.email.data).first()
-        if study is not None and study.verify_password(form.password.data):
-            login_user(study, form.remember_me.data)
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
                 next = url_for('main.index')
             return redirect(next)
-        flash('Invalid Study Name or password.')
+        flash('Invalid User Name or password.')
     return render_template('auth/login.html', form=form)
 
 
@@ -54,14 +54,14 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        study = Study(email=form.email.data,
-                    studyname=form.studyname.data,
+        user = User(email=form.email.data,
+                    username=form.username.data,
                     password=form.password.data)
-        db.session.add(study)
+        db.session.add(user)
         db.session.commit()
-        token = study.generate_confirmation_token()
-        send_email(study.email, 'Confirm Your Account',
-                   'auth/email/confirm', study=study, token=token)
+        token = user.generate_confirmation_token()
+        send_email(user.email, 'Confirm Your Account',
+                   'auth/email/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
@@ -85,7 +85,7 @@ def confirm(token):
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
     send_email(current_user.email, 'Confirm Your Account',
-               'auth/email/confirm', study=current_user, token=token)
+               'auth/email/confirm', user=current_user, token=token)
     flash('A new confirmation email has been sent to you by email.')
     return redirect(url_for('main.index'))
 
@@ -112,12 +112,12 @@ def password_reset_request():
         return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
-        study = study.query.filter_by(email=form.email.data).first()
-        if study:
-            token = study.generate_reset_token()
-            send_email(study.email, 'Reset Your Password',
+        user = user.query.filter_by(email=form.email.data).first()
+        if user:
+            token = user.generate_reset_token()
+            send_email(user.email, 'Reset Your Password',
                        'auth/email/reset_password',
-                       study=study, token=token,
+                       user=user, token=token,
                        next=request.args.get('next'))
         flash('An email with instructions to reset your password has been '
               'sent to you.')
@@ -131,7 +131,7 @@ def password_reset(token):
         return redirect(url_for('main.index'))
     form = PasswordResetForm()
     if form.validate_on_submit():
-        if study.reset_password(token, form.password.data):
+        if user.reset_password(token, form.password.data):
             db.session.commit()
             flash('Your password has been updated.')
             return redirect(url_for('auth.login'))
@@ -150,7 +150,7 @@ def change_email_request():
             token = current_user.generate_email_change_token(new_email)
             send_email(new_email, 'Confirm your email address',
                        'auth/email/change_email',
-                       study=current_user, token=token)
+                       user=current_user, token=token)
             flash('An email with instructions to confirm your new email '
                   'address has been sent to you.')
             return redirect(url_for('main.index'))

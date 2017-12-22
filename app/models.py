@@ -23,7 +23,7 @@ class Role(db.Model):
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    study = db.relationship('Study', backref='role', lazy='dynamic')
+    user = db.relationship('User', backref='role', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(Role, self).__init__(**kwargs)
@@ -70,11 +70,11 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 
-class Study(UserMixin, db.Model):
-    __tablename__ = 'study'
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
-    studyname = db.Column(db.String(64), unique=True, index=True)
+    username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
@@ -91,7 +91,7 @@ class Study(UserMixin, db.Model):
 
 
     def __init__(self, **kwargs):
-        super(Study, self).__init__(**kwargs)
+        super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['FLASKY_ADMIN']:
                 self.role = Role.query.filter_by(name='Administrator').first()
@@ -138,11 +138,11 @@ class Study(UserMixin, db.Model):
             data = s.loads(token.encode('utf-8'))
         except:
             return False
-        study = Study.query.get(data.get('reset'))
-        if study is None:
+        user = User.query.get(data.get('reset'))
+        if user is None:
             return False
-        study.password = new_password
-        db.session.add(study)
+        user.password = new_password
+        db.session.add(user)
         return True
 
     def generate_email_change_token(self, new_email, expiration=3600):
@@ -188,7 +188,7 @@ class Study(UserMixin, db.Model):
             url=url, hash=hash, size=size, default=default, rating=rating)
 
     def __repr__(self):
-        return '<Study %r>' % self.studyname
+        return '<User %r>' % self.username
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -202,8 +202,8 @@ login_manager.anonymous_user = AnonymousUser
 
 
 @login_manager.user_loader
-def load_study(study_id):
-    return Study.query.get(int(study_id))
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 class Post(db.Model):
@@ -212,7 +212,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('study.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):

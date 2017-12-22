@@ -6,14 +6,14 @@
 {% block page_content %}
 <div class="page-header">
   {% if current_user.is_authenticated %}
-    <h3 align="center">Hello! Let's work on the consent for {{ current_user.studyname }}!</h3>
+    <h3 align="center">Hello {{ user.username }}! Let's work on your consent documents!</h3>
   {% else %}
     <h3 align="center">Hello! Login and let's get to work on your consent!</h3>
     {% endif %}
 </div>
 <div align="center">
 
-  <a class="btn btn-default" href="{{ url_for('.edit_consent') }}">Edit Consent</a>
+
 
 </div>
 

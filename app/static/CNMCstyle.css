@@ -1,0 +1,30 @@
+body { font: 12px arial}
+nav { font-size: 12px }
+
+h3, h5 {
+    text-align: center;
+}
+
+@page {
+  font: arial;
+  font-size: 1em
+  size: A5;
+  margin: 1.5cm;
+  @top-right{
+    content: "Page " counter(page) " of " counter(pages);
+  }
+}
+@page {
+  @top-left{
+    content: "Murray Pollack, MD";
+    }
+}
+@page {
+  @top-left{
+    content: "url('CNMC_logo.png)";
+    }
+}
+
+@media print {
+    nav { display: none }
+}

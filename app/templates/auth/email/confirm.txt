@@ -1,4 +1,4 @@
-Dear {{ study.studyname }},
+Dear {{ user.username }},
 
 Welcome to Kevin's Form Builder!
 
